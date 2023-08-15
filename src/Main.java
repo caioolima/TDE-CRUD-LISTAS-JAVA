@@ -1,90 +1,90 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
-// Interface para realizar as operações
-interface Operacao {
-    double calcular(List<Double> numeros);
-}
+class NumerosCRUD {
+    private List<Double> numeros = new ArrayList<>();
 
-// Operações aritméticas
-class Soma implements Operacao {
-    public double calcular(List<Double> numeros) {
-        double resultado = 0;
-        for (double num : numeros) {
-            resultado += num;
-        }
-        return resultado;
+    public void criarNumero(double numero) {
+        numeros.add(numero);
     }
-}
 
-class Subtracao implements Operacao {
-    public double calcular(List<Double> numeros) {
-        double resultado = numeros.get(0);
-        for (int i = 1; i < numeros.size(); i++) {
-            resultado -= numeros.get(i);
-        }
-        return resultado;
+    public List<Double> lerNumeros() {
+        return numeros;
     }
-}
 
-class Multiplicacao implements Operacao {
-    public double calcular(List<Double> numeros) {
-        double resultado = 1;
-        for (double num : numeros) {
-            resultado *= num;
+    public void atualizarNumero(int indice, double novoNumero) {
+        if (indice >= 0 && indice < numeros.size()) {
+            numeros.set(indice, novoNumero);
+        } else {
+            System.out.println("\nÍndice inválido.");
         }
-        return resultado;
     }
-}
 
-class Divisao implements Operacao {
-    public double calcular(List<Double> numeros) {
-        double resultado = numeros.get(0);
-        for (int i = 1; i < numeros.size(); i++) {
-            resultado /= numeros.get(i);
+    public void excluirNumero(int indice) {
+        if (indice >= 0 && indice < numeros.size()) {
+            numeros.remove(indice);
+        } else {
+            System.out.println("\nÍndice inválido.");
         }
-        return resultado;
-    }
-}
-
-// Calculadora
-class Calculadora {
-    public double executarOperacao(String operador, List<Double> numeros) {
-        Operacao operacao = switch (operador) {
-            case "+" -> new Soma();
-            case "-" -> new Subtracao();
-            case "*" -> new Multiplicacao();
-            case "/" -> new Divisao();
-            default -> throw new IllegalArgumentException("Operação não suportada.");
-        };
-
-        return operacao.calcular(numeros);
     }
 }
 
 public class Main {
     public static void main(String[] args) {
-        Calculadora calculadora = new Calculadora();
+        NumerosCRUD numerosCRUD = new NumerosCRUD();
+        Scanner scanner = new Scanner(System.in);
 
-        String operador1 = "+";
-        String operador2 = "-";
-        String operador3 = "*";
-        String operador4 = "/";
-        List<Double> numeros = new ArrayList<>();
-        numeros.add(5.0);
-        numeros.add(4.0);
-        numeros.add(3.0);
-        numeros.add(2.0);
-        numeros.add(1.0);
+        boolean continuar = true;
 
-        double resultado1 = calculadora.executarOperacao(operador1, numeros);
-        double resultado2 = calculadora.executarOperacao(operador2, numeros);
-        double resultado3 = calculadora.executarOperacao(operador3, numeros);
-        double resultado4 = calculadora.executarOperacao(operador4, numeros);
+        while (continuar) {
+            System.out.println("Escolha uma operação:");
+            System.out.println("1. Criar número");
+            System.out.println("2. Ler números");
+            System.out.println("3. Atualizar número");
+            System.out.println("4. Excluir número");
+            System.out.println("5. Sair");
 
-        System.out.println("Resultado soma:\n" + resultado1);
-        System.out.println("\nResultado subtração:\n" + resultado2);
-        System.out.println("\nResultado multiplicação:\n" + resultado3);
-        System.out.println("\nResultado divisão:\n" + resultado4);
+            try {
+                int escolha = scanner.nextInt();
+
+                switch (escolha) {
+                    case 1:
+                        System.out.print("\nDigite o número: ");
+                        double novoNumero = scanner.nextDouble();
+                        numerosCRUD.criarNumero(novoNumero);
+                        break;
+                    case 2:
+                        List<Double> numerosLidos = numerosCRUD.lerNumeros();
+                        System.out.println("\nNúmeros na lista: " + numerosLidos);
+                        break;
+                    case 3:
+                        System.out.print("\nDigite o índice do número a ser atualizado: ");
+                        int indiceAtualizacao = scanner.nextInt();
+                        System.out.print("\nDigite o novo número: ");
+                        double novoNumeroAtualizado = scanner.nextDouble();
+                        numerosCRUD.atualizarNumero(indiceAtualizacao, novoNumeroAtualizado);
+                        break;
+                    case 4:
+                        System.out.print("\nDigite o índice do número a ser excluído: ");
+                        int indiceExclusao = scanner.nextInt();
+                        numerosCRUD.excluirNumero(indiceExclusao);
+                        break;
+                    case 5:
+                        continuar = false;
+                        break;
+                    default:
+                        System.out.println("\nOpção inválida.");
+                        break;
+                }
+
+                // Atraso de 1 segundo (1000 milissegundos)
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+
+        System.out.println("\nEncerrando o programa.");
     }
 }
